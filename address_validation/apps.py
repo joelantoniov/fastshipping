@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class AdressValidationConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'adress_validation'
+    name = 'address_validation'
