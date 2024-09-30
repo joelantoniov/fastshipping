@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'tracking',
     'address_validation',
     'channels',
+    'corsheaders',
 ]
 
 ASGI_APPLICATION = 'fastshipping.routing.application'
@@ -59,6 +60,7 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,6 +70,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'fastshipping.urls'
 

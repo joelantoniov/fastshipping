@@ -10,6 +10,7 @@ class ShipmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
+        """
         # Validate origin address
         response_origin = requests.post(
             "http://127.0.0.1:8000/api/addresses/validate-address/",
@@ -38,6 +39,5 @@ class ShipmentSerializer(serializers.ModelSerializer):
 
         if not response_destination_json.get('valid'):
             raise serializers.ValidationError("Invalid destination address.")
-
+"""
         return data
-
