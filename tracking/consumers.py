@@ -27,21 +27,29 @@ class TrackingConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         try:
+            # Parse JSON message
             text_data_json = json.loads(text_data)
-            message = text_data_json['message']
 
-            # Validate message format
-            if not isinstance(message, str):
-                raise ValueError("Message must be a string.")
+            # Check message type and handle accordingly
+            message_type = text_data_json.get('type')
+            
+            if message_type == "tracking_update":
+                status = text_data_json.get('status')
+                location = text_data_json.get('location')
+                if not status or not location:
+                    raise ValueError("Both 'status' and 'location' must be provided for tracking updates.")
 
-            # Send message to room group
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'chat_message',
-                    'message': message
-                }
-            )
+                # Send message to room group
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'tracking_update',
+                        'status': status,
+                        'location': location
+                    }
+                )
+            else:
+                raise ValueError(f"Unsupported message type: {message_type}")
         except ValueError as e:
             logger.error(f"Invalid message format: {e}")
             await self.send(text_data=json.dumps({
@@ -58,11 +66,12 @@ class TrackingConsumer(AsyncWebsocketConsumer):
                 'error': "An unexpected error occurred."
             }))
 
-    async def chat_message(self, event):
-        message = event['message']
+    async def tracking_update(self, event):
+        status = event['status']
+        location = event['location']
 
-        # Send message to WebSocket
+        # Send the tracking update to WebSocket
         await self.send(text_data=json.dumps({
-            'message': message
+            'status': status,
+            'location': location
         }))
-
